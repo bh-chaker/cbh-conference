@@ -623,13 +623,8 @@ class ConferenceApi(remote.Service):
         del data["sessionKey"]
         Session(**data).put()
 
-        # If the speaker is in more than one session, update the
-        # memcache value of the key MEMCACHE_FEATURED_SPEAKER_KEY
-        sessions = Session.query(Session.speaker == data['speaker'])
-        sessionNames = [session.name for session in sessions]
-        if len(sessionNames) > 1:
-            featuredSpeaker = data['speaker'] + ': ' + ', '.join(sessionNames)
-            memcache.set(MEMCACHE_FEATURED_SPEAKER_KEY, featuredSpeaker)
+        taskqueue.add(params={'speaker': data['speaker']},
+                      url='/tasks/update_featured_speaker')
 
         return sf
 
@@ -753,6 +748,16 @@ class ConferenceApi(remote.Service):
         return SessionForms(
             items=[self._copySessionToForm(ndb.Key(urlsafe=w.sessionKey).get()) for w in wish_list]
         )
+
+    @staticmethod
+    def _updateFeaturedSpeaker(speaker):
+        # If the speaker is in more than one session, update the
+        # memcache value of the key MEMCACHE_FEATURED_SPEAKER_KEY
+        sessions = Session.query(Session.speaker == speaker)
+        sessionNames = [session.name for session in sessions]
+        if len(sessionNames) > 1:
+            featuredSpeaker = speaker + ': ' + ', '.join(sessionNames)
+            memcache.set(MEMCACHE_FEATURED_SPEAKER_KEY, featuredSpeaker)
 
     @endpoints.method(message_types.VoidMessage, StringMessage,
                       path='getFeaturedSpeaker',
