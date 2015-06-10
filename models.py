@@ -110,6 +110,7 @@ class ConferenceQueryForms(messages.Message):
     """ConferenceQueryForms -- multiple ConferenceQueryForm inbound form message"""
     filters = messages.MessageField(ConferenceQueryForm, 1, repeated=True)
 
+# This class is not actually used
 class Speaker(ndb.Model):
     """Speaker -- Speaker object"""
     name            = ndb.StringProperty(required=True)
@@ -118,6 +119,7 @@ class Speaker(ndb.Model):
     email           = ndb.StringProperty()
     phoneNumber     = ndb.StringProperty()
 
+# This class is not acutally used
 class SpeakerForm(messages.Message):
     """SpeakerForm -- Speaker outbound form message"""
     name            = messages.StringField(1)

@@ -11,6 +11,8 @@ I left both date and startTime as Strings. Instead of converting them, I used le
 
 - Comparting two times in the format "HH:MM" (24 hour clock) is quivalent to comparing two strings.
 
+I created TypeOfSession as Enum type. The rest of the field are Strings.
+
 I didn't create a separate entity for the speaker, but it should be interesting in a future release. A speaker can have: name, email, organization...
 
 ## Task 2: Add Sessions to User Wishlist
